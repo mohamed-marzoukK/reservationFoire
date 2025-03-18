@@ -9,16 +9,9 @@ use Cake\ORM\Entity;
  * Stand Entity
  *
  * @property int $id
- * @property string $name
- * @property int $x1
- * @property int $y1
- * @property int $x2
- * @property int $y2
- * @property int $width
- * @property int $height
- * @property int $angle
- * @property \Cake\I18n\DateTime $created_at
- * @property \Cake\I18n\DateTime $updated_at
+ * @property string|null $image
+ * @property int|null $number_of_stands
+
  */
 class Stand extends Entity
 {
@@ -32,15 +25,8 @@ class Stand extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'name' => true,
-        'x1' => true,
-        'y1' => true,
-        'x2' => true,
-        'y2' => true,
-        'width' => true,
-        'height' => true,
-        'angle' => true,
-        'created_at' => true,
-        'updated_at' => true,
+        'image' => true,
+        'number_of_stands' => true,
+        
     ];
 }

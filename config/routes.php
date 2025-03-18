@@ -50,7 +50,7 @@ return function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
     
     $routes->post('/hall/save-position', ['controller' => 'Hall', 'action' => 'savePosition']);
-
+  
 // Remplacer 'Halls' par 'Hall' pour correspondre au nom du contrôleur
 
     $routes->scope('/', function (RouteBuilder $builder): void {
@@ -60,7 +60,13 @@ return function (RouteBuilder $routes): void {
          * to use (in this case, templates/Pages/home.php)...
          */
         $builder->connect('/', ['controller' => 'Admin', 'action' => 'add']);
+        $builder->connect('/stands', ['controller' => 'Stands', 'action' => 'add']);
+        $builder->get('/StandGet/view/{id}', ['controller' => 'StandGet', 'action' => 'view'])->setPass(['id']);
+
         $builder->get('/hall/view/{id}', ['controller' => 'Hall', 'action' => 'view'])->setPass(['id']);
+        
+
+    
         $builder->fallbacks();
         /*
           /*

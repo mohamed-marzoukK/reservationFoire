@@ -1,15 +1,13 @@
-<h1>Gestion des Stands</h1>
-<p><strong>Nombre de Stands :</strong> <?= h($admin->nb_hall) ?></p>
+<h1>إدارة القاعة</h1>
+<p><strong>عدد القاعات :</strong> <?= h($admin->nb_hall) ?></p>
 
-<div class="stand-container">
-    <img id="stand-image" src="<?= $this->Url->build('/img/' . $admin->image) ?>" alt="Plan" width="800" height="500">
+<div class="hall-container">
+    <img id="hall-image" src="<?= $this->Url->build('/img/' . $admin->image) ?>" alt="Plan" width="800" height="500">
     
    
     <?php for ($i = 1; $i <= $admin->nb_hall; $i++): ?>
-        <div id="stand-<?= $i ?>" class="draggable" data-x="0" data-y="0" data-angle="0">
-            <p>Stand <?= $i ?></p>
-
-            <!-- Poignées de redimensionnement -->
+        <div id="hall-<?= $i ?>" class="draggable" data-x="0" data-y="0" data-angle="0">
+               <a href="<?= $this->Url->build(['controller' => 'Stands', 'action' => 'add', $i]) ?>">قاعة <?= $i ?></a>     <!-- Poignées de redimensionnement -->
             <div class="resize-handle top-left" data-handle="tl"></div>
             <div class="resize-handle top-right" data-handle="tr"></div>
             <div class="resize-handle bottom-left" data-handle="bl"></div>
@@ -23,12 +21,12 @@
         
     <?php endfor; ?>
     <div class="save-controls">
-    <button id="saveAllButton" class="btn-save">💾 Enregistrer toutes les positions</button>
+    <button id="saveAllButton" class="btn-save">💾 حفظ كافة المواقف</button>
     <span id="saveStatus" class="status-message"></span>
 </div></div>
 
 <style>
-    .stand-container {
+    .hall-container {
         position: relative;
         width: 800px;
         height: 500px;
@@ -77,8 +75,8 @@
 
 <script>
 // Déclaration correcte des variables
-const container = document.querySelector('.stand-container');
-const imgElement = document.getElementById('stand-image');
+const container = document.querySelector('.hall-container');
+const imgElement = document.getElementById('hall-image');
 let draggables; // Déclaration globale
 document.addEventListener('DOMContentLoaded', () => {
      draggables = document.querySelectorAll('.draggable');
@@ -236,8 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
 
-    const container = document.querySelector('.stand-container');
-const imgElement = document.getElementById('stand-image');
+    const container = document.querySelector('.hall-container');
+const imgElement = document.getElementById('hall-image');
 
 const getPercentagePosition = (element) => {
     const imgRect = imgElement.getBoundingClientRect();
@@ -262,9 +260,9 @@ const saveAllPositions = async () => {
         statusElement.textContent = 'Sauvegarde en cours...';
         
         try {
-            const saves = Array.from(draggables).map(stand => {
-                const data = getPercentagePosition(stand);
-                const standId = stand.id.split('-')[1];
+            const saves = Array.from(draggables).map(hall => {
+                const data = getPercentagePosition(hall);
+                const hallId = hall.id.split('-')[1];
                 
                 return fetch('/hall/save-position', {
                     method: 'POST',
@@ -273,7 +271,7 @@ const saveAllPositions = async () => {
                         'X-CSRF-Token': '<?= $this->request->getAttribute('csrfToken') ?>'
                     },
                     body: JSON.stringify({
-                        id: standId,
+                        id: hallId,
                         admin_id: <?= $admin->id ?>,
                         x_percent: data.x,
                         y_percent: data.y,

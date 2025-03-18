@@ -24,6 +24,8 @@ use Cake\Validation\Validator;
  * @method iterable<\App\Model\Entity\Stand>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Stand> saveManyOrFail(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Stand>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Stand>|false deleteMany(iterable $entities, array $options = [])
  * @method iterable<\App\Model\Entity\Stand>|\Cake\Datasource\ResultSetInterface<\App\Model\Entity\Stand> deleteManyOrFail(iterable $entities, array $options = [])
+ *
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class StandsTable extends Table
 {
@@ -38,8 +40,10 @@ class StandsTable extends Table
         parent::initialize($config);
 
         $this->setTable('stands');
-        $this->setDisplayField('name');
+        $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+ 
     }
 
     /**
@@ -51,52 +55,15 @@ class StandsTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('name')
-            ->maxLength('name', 100)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+            ->scalar('image')
+            ->maxLength('image', 255)
+            ->requirePresence('image', 'create')
+            ->notEmptyFile('image');
 
         $validator
-            ->integer('x1')
-            ->requirePresence('x1', 'create')
-            ->notEmptyString('x1');
-
-        $validator
-            ->integer('y1')
-            ->requirePresence('y1', 'create')
-            ->notEmptyString('y1');
-
-        $validator
-            ->integer('x2')
-            ->requirePresence('x2', 'create')
-            ->notEmptyString('x2');
-
-        $validator
-            ->integer('y2')
-            ->requirePresence('y2', 'create')
-            ->notEmptyString('y2');
-
-        $validator
-            ->integer('width')
-            ->requirePresence('width', 'create')
-            ->notEmptyString('width');
-
-        $validator
-            ->integer('height')
-            ->requirePresence('height', 'create')
-            ->notEmptyString('height');
-
-        $validator
-            ->integer('angle')
-            ->notEmptyString('angle');
-
-        $validator
-            ->dateTime('created_at')
-            ->notEmptyDateTime('created_at');
-
-        $validator
-            ->dateTime('updated_at')
-            ->notEmptyDateTime('updated_at');
+            ->integer('number_of_stands')
+            ->requirePresence('number_of_stands', 'create')
+            ->notEmptyString('number_of_stands');
 
         return $validator;
     }

@@ -43,8 +43,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </div>
     </main>
     
-    <footer>
+    
         <?= $this->element('footer') ?> <!-- Ajout du footer si déjà créé -->
-    </footer>
+    
 </body>
 </html>

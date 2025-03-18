@@ -20,16 +20,10 @@ class StandsFixture extends TestFixture
         $this->records = [
             [
                 'id' => 1,
-                'name' => 'Lorem ipsum dolor sit amet',
-                'x1' => 1,
-                'y1' => 1,
-                'x2' => 1,
-                'y2' => 1,
-                'width' => 1,
-                'height' => 1,
-                'angle' => 1,
-                'created_at' => 1740747113,
-                'updated_at' => 1740747113,
+                'image' => 'Lorem ipsum dolor sit amet',
+                'number_of_stands' => 1,
+                'created' => '2025-03-18 02:17:46',
+                'modified' => '2025-03-18 02:17:46',
             ],
         ];
         parent::init();
