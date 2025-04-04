@@ -42,7 +42,10 @@ class StandsTable extends Table
         $this->setTable('stands');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
+        $this->belongsTo('Halls', [
+            'foreignKey' => 'hall_id',
+            'joinType' => 'INNER', // ou 'LEFT' si hall_id peut être NULL
+        ]);
  
     }
 
@@ -64,6 +67,10 @@ class StandsTable extends Table
             ->integer('number_of_stands')
             ->requirePresence('number_of_stands', 'create')
             ->notEmptyString('number_of_stands');
+            $validator
+            ->integer('hall_id')
+            ->requirePresence('hall_id', 'create')
+            ->notEmptyString('hall_id');
 
         return $validator;
     }

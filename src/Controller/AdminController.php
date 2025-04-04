@@ -8,13 +8,36 @@ use Cake\Http\Exception\NotFoundException;
 
 class AdminController extends AppController
 {
+    public function initialize(): void
+    {
+        parent::initialize();
+    }
+
     public function index()
     {
-        exit('admin');
+        $users = $this->fetchTable('Users')->find()
+            ->order(['Users.created' => 'DESC'])
+            ->all();
+        
+        $admin = $this->Authentication->getIdentity();
+        
+        $this->set(compact('users', 'admin'));
     }
 
     public function add()
     {
+        // Vérifier si un enregistrement existe déjà dans la table Admin
+        $adminTable = $this->fetchTable('Admin');
+        $userId = $this->Authentication->getIdentity()->id; // ID de l'utilisateur connecté
+        $existingAdmin = $adminTable->find()->first();
+
+        if ($existingAdmin) {
+            // Si un enregistrement existe, rediriger vers HallController::view avec cet ID
+            $this->Flash->info('Un enregistrement Admin existe déjà.');
+            return $this->redirect(['controller' => 'Hall', 'action' => 'view', $existingAdmin->id]);
+        }
+
+        // Si aucun enregistrement n'existe, permettre l'ajout
         $admin = $this->Admin->newEmptyEntity();
 
         if ($this->request->is('post')) {
@@ -47,8 +70,8 @@ class AdminController extends AppController
                 return $this->redirect(['controller' => 'Hall', 'action' => 'view', $admin->id]);
             } else {
                 debug($admin);
-                debug($admin->getErrors()); // Affiche les erreurs de validation
-                exit; // Stoppe l'exécution pour voir les erreurs
+                debug($admin->getErrors());
+                // Pas d'exit, laisser la vue se rendre pour afficher les erreurs
             }
         }
 

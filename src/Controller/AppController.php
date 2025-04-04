@@ -40,8 +40,10 @@ class AppController extends Controller
     public function initialize(): void
     {
         parent::initialize();
-
+       
         $this->loadComponent('Flash');
+        $this->loadComponent('Authentication.Authentication');
+        $this->viewBuilder()->setHelpers(['Identity']); // Load the IdentityHelper
        
 
         /*
@@ -50,4 +52,6 @@ class AppController extends Controller
          */
         //$this->loadComponent('FormProtection');
     }
+    // Ajoutez cette méthode pour l'autorisation
+
 }

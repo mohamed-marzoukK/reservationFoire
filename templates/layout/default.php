@@ -1,50 +1,79 @@
 <?php
-/**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
- * @var \App\View\AppView $this
- */
+use App\View\Helper\IdentityHelper;
 
-$cakeDescription = 'CakePHP: the rapid development php framework';
+// Instantiate the IdentityHelper
+$identity = new IdentityHelper($this);
+
+// Check if the user is logged in and has an 'admin' role
+$isLoggedIn = $identity->isLoggedIn();
+$isAdmin = $isLoggedIn && $identity->get('role') === 'admin'; // Assuming 'role' is the field in your users table
+
+// Check if the current page is the login page
+$currentController = $this->request->getParam('controller');
+$currentAction = $this->request->getParam('action');
+$isLoginPage = ($currentController === 'Users' && $currentAction === 'login');
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>
-        <?= $cakeDescription ?>:
-        <?= $this->fetch('title') ?>
-    </title>
-    <?= $this->Html->meta('icon') ?>
-
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake']) ?>
-    <?= $this->Html->css('style.css') ?>
+    
+    <?= $this->Html->css([
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+        'normalize.min',
+        'milligram.min',
+        'fonts',
+        'cake',
+        'admin'
+    ]) ?>
+    
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
-    <?= $this->fetch('script') ?>
 </head>
-<body>
-    <?= $this->element('header') ?> <!-- Ajout du nouveau header -->
+<body class="dashboard-admin">
 
-    <main class="main">
-        <div class="container">
-            <?= $this->Flash->render() ?>
-            <?= $this->fetch('content') ?>
-        </div>
-    </main>
-    
-    
-        <?= $this->element('footer') ?> <!-- Ajout du footer si déjà créé -->
-    
+    <!-- Header for non-admin users -->
+    <?php if (!$isAdmin && !$isLoginPage): ?>
+        <?php echo $this->element('header'); // Include header.php ?>
+    <?php endif; ?>
+
+    <!-- Admin Sidebar and Main Content -->
+    <?php if ($isAdmin && !$isLoginPage): ?>
+        <?php echo $this->element('admin_sidebar'); // Include admin_sidebar.php ?>
+        <main class="dashboard-main">
+            <div class="container-fluid">
+                <?= $this->Flash->render() ?>
+                <?= $this->fetch('content') ?>
+            </div>
+        </main>
+    <?php endif; ?>
+
+    <!-- Non-Admin Content (without sidebar) -->
+    <?php if (!$isAdmin && !$isLoginPage): ?>
+        <main class="main-content">
+            <div class="container-fluid">
+                <?= $this->Flash->render() ?>
+                <?= $this->fetch('content') ?>
+            </div>
+        </main>
+    <?php endif; ?>
+
+    <!-- Login Page Content (no header/footer/sidebar) -->
+    <?php if ($isLoginPage): ?>
+        <main class="login-content">
+            <div class="container-fluid">
+                <?= $this->Flash->render() ?>
+                <?= $this->fetch('content') ?>
+            </div>
+        </main>
+    <?php endif; ?>
+
+    <!-- Footer for non-admin users -->
+    <?php if (!$isAdmin && !$isLoginPage): ?>
+        <?php echo $this->element('footer'); // Include footer.php ?>
+    <?php endif; ?>
+
 </body>
 </html>

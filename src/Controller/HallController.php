@@ -12,14 +12,34 @@ class HallController extends AppController
     {
         parent::initialize();
         $this->Halls = $this->fetchTable('Halls');
-      
     }
-    public function view($id)
+
+    public function view($id = null)
     {
-        $admin = $this->fetchTable('Admin')->get($id, [
-            'contain' => ['Halls']
-        ]);
-    
+        // Vérifier si $id est fourni
+        if (!$id) {
+            return $this->redirect(['controller' => 'Admin', 'action' => 'add']);
+        }
+      
+        // Récupérer l'entité Admin avec l'ID donné
+        $adminTable = $this->fetchTable('Admin');
+        try {
+            $admin = $adminTable->get($id, [
+                'contain' => ['Halls']
+            ]);
+        } catch (\Cake\Datasource\Exception\RecordNotFoundException $e) {
+            $this->Flash->error('Aucun enregistrement Admin trouvé pour cet ID.');
+            return $this->redirect(['controller' => 'Admin', 'action' => 'add']);
+        }
+
+        // Vérifier si image et nb_hall sont définis et non vides
+        if (empty($admin->image) || empty($admin->nb_hall)) {
+            $this->Flash->error('Image ou nombre de halls manquant. Veuillez ajouter ces informations.');
+            return $this->redirect(['controller' => 'Admin', 'action' => 'add']);
+        }
+        $hall = $this->fetchTable('Halls');
+
+        // Passer les données à la vue
         $this->set(compact('admin'));
     }
     // src/Controller/HallController.php

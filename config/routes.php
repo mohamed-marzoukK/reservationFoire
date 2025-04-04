@@ -50,8 +50,15 @@ return function (RouteBuilder $routes): void {
     $routes->setRouteClass(DashedRoute::class);
     
     $routes->post('/hall/save-position', ['controller' => 'Hall', 'action' => 'savePosition']);
-  
+    $routes->scope('/admin', function (RouteBuilder $adminRoutes) {
+        $adminRoutes->connect('/', ['controller' => 'Admin', 'action' => 'index']);
+        $adminRoutes->connect('/users/*', ['controller' => 'Users']);
+        $adminRoutes->connect('/articles/*', ['controller' => 'Articles']);
+        $adminRoutes->connect('/settings/*', ['controller' => 'Settings']);
+    });
 // Remplacer 'Halls' par 'Hall' pour correspondre au nom du contrôleur
+
+    
 
     $routes->scope('/', function (RouteBuilder $builder): void {
         /*
@@ -59,12 +66,14 @@ return function (RouteBuilder $routes): void {
          * its action called 'display', and we pass a param to select the view file
          * to use (in this case, templates/Pages/home.php)...
          */
-        $builder->connect('/', ['controller' => 'Admin', 'action' => 'add']);
+        //$builder->connect('/', ['controller' => 'Admin', 'action' => 'add']);
+        $builder->connect('/', ['controller' => 'Users', 'action' => 'login']);
+        $builder->connect('/users/logout', ['controller' => 'Users', 'action' => 'logout']);
         $builder->connect('/stands', ['controller' => 'Stands', 'action' => 'add']);
         $builder->get('/StandGet/view/{id}', ['controller' => 'StandGet', 'action' => 'view'])->setPass(['id']);
 
-        $builder->get('/hall/view/{id}', ['controller' => 'Hall', 'action' => 'view'])->setPass(['id']);
-        
+        $builder->connect('/hall/view/{id}', ['controller' => 'Hall', 'action' => 'view'])->setPass(['id']);
+        $builder->connect('/users/add', ['controller' => 'Users', 'action' => 'add']);
 
     
         $builder->fallbacks();

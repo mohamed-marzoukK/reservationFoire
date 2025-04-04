@@ -4,27 +4,45 @@
 <div class="hall-container">
     <img id="hall-image" src="<?= $this->Url->build('/img/' . $admin->image) ?>" alt="Plan" width="800" height="500">
     
-   
-    <?php for ($i = 1; $i <= $admin->nb_hall; $i++): ?>
-        <div id="hall-<?= $i ?>" class="draggable" data-x="0" data-y="0" data-angle="0">
-               <a href="<?= $this->Url->build(['controller' => 'Stands', 'action' => 'add', $i]) ?>">قاعة <?= $i ?></a>     <!-- Poignées de redimensionnement -->
-            <div class="resize-handle top-left" data-handle="tl"></div>
-            <div class="resize-handle top-right" data-handle="tr"></div>
-            <div class="resize-handle bottom-left" data-handle="bl"></div>
-            <div class="resize-handle bottom-right" data-handle="br"></div>
-
-            <!-- Poignée de rotation -->
-            <div class="rotate-handle"></div>
-            
-
-        </div>
-        
-    <?php endfor; ?>
+    <?php $i = 1; // Initialiser le compteur ?>
+<?php foreach ($admin->halls as $hall): 
+    // Définir les styles initiaux à partir des données sauvegardées ou des valeurs par défaut
+    $xPercent = !empty($hall->x_percent) ? $hall->x_percent : 0;
+    $yPercent = !empty($hall->y_percent) ? $hall->y_percent : 0;
+    $widthPercent = !empty($hall->width_percent) ? $hall->width_percent : 12.5;
+    $heightPercent = !empty($hall->height_percent) ? $hall->height_percent : 12;
+    $rotation = !empty($hall->rotation_degrees) ? $hall->rotation_degrees : 0;
+?>
+    <div 
+        id="hall-<?= $hall->id ?>" 
+        class="draggable" 
+        style="
+            left: <?= $xPercent ?>%;
+            top: <?= $yPercent ?>%;
+            width: <?= $widthPercent ?>%;
+            height: <?= $heightPercent ?>%;
+            transform: rotate(<?= $rotation ?>deg);
+        "
+        data-x="<?= $xPercent ?>" 
+        data-y="<?= $yPercent ?>" 
+        data-angle="<?= $rotation ?>"
+    >
+        <a href="<?= $this->Url->build(['controller' => 'StandGet', 'action' => 'view', $hall->id]) ?>">
+            قاعة <?= $i ?>
+        </a>
+        <div class="resize-handle top-left" data-handle="tl"></div>
+        <div class="resize-handle top-right" data-handle="tr"></div>
+        <div class="resize-handle bottom-left" data-handle="bl"></div>
+        <div class="resize-handle bottom-right" data-handle="br"></div>
+        <div class="rotate-handle"></div>
+    </div>
+    <?php $i++; // Incrémenter le compteur ?>
+<?php endforeach; ?>
     <div class="save-controls">
-    <button id="saveAllButton" class="btn-save">💾 حفظ كافة المواقف</button>
-    <span id="saveStatus" class="status-message"></span>
-</div></div>
-
+        <button id="saveAllButton" class="btn-save">💾 حفظ كافة المواقف</button>
+        <span id="saveStatus" class="status-message"></span>
+    </div>
+</div>
 <style>
     .hall-container {
         position: relative;
